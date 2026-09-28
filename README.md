@@ -40,9 +40,9 @@ flowchart TD
 
 ### Daten und Wissen
 
-Die relationale Datenbank beantwortet Fragen wie „Welche Plattform existiert?“ und „Welches Deployment ist fehlgeschlagen?“. Die RAG-Suche beantwortet Fragen wie „Welcher Standard gilt für PROD?“ oder „Was empfiehlt das Runbook bei diesem Fehler?“. Für den aktuellen Zustand in Azure und Databricks fragt der Assistant die jeweiligen Systeme ab; gespeicherte Daten können veraltet sein.
+Die relationale Datenbank beantwortet Fragen wie „Welche Plattform existiert?“ und „Welches Deployment ist fehlgeschlagen?“. Die RAG-Suche beantwortet Fragen wie „Welcher Standard gilt für PROD?“ oder „Was empfiehlt das Runbook bei diesem Fehler?“. Für den aktuellen Zustand in Azure und Databricks fragt der Assistant die jeweiligen Systeme ab, gespeicherte Daten können veraltet sein.
 
-Geplante Kernobjekte sind `users`, `platforms`, `deployments`, `incidents`, `documents` und `agent_runs`. `conversations` und `messages` halten später den Chat-Kontext fest. Ein Deployment speichert unter anderem Status, zugehörige Plattform, Planreferenz, Freigabe und Ergebnis. Es wird im regulären Assistant-Workflow intern angelegt; der Nutzer muss keine Folge von CRUD-Endpunkten selbst bedienen.
+Geplante Kernobjekte sind `users`, `platforms`, `deployments`, `incidents`, `documents` und `agent_runs`. `conversations` und `messages` halten später den Chat-Kontext fest. Ein Deployment speichert unter anderem Status, zugehörige Plattform, Planreferenz, Freigabe und Ergebnis. Es wird im regulären Assistant-Workflow intern angelegt, der Nutzer muss keine Folge von CRUD-Endpunkten selbst bedienen.
 
 ## Geplanter Ablauf: Plattform bereitstellen
 
@@ -68,11 +68,11 @@ flowchart TD
 
 ## Geplanter Ablauf: Incident untersuchen
 
-Ein Incident kann durch einen Nutzer oder ein Monitoring-Signal entstehen. Der Assistant lädt betroffene Plattform, fehlgeschlagene Databricks-Jobläufe, Logs und jüngste Deployments. RAG ergänzt passende Runbooks. Daraus erstellt das LLM eine **begründete Diagnose mit Belegen und Handlungsvorschlägen**. Die Behebung wird nicht allein aus einer Modellvermutung ausgeführt; Änderungen durchlaufen einen eigenen kontrollierten Freigabeprozess.
+Ein Incident kann durch einen Nutzer oder ein Monitoring-Signal entstehen. Der Assistant lädt betroffene Plattform, fehlgeschlagene Databricks-Jobläufe, Logs und jüngste Deployments. RAG ergänzt passende Runbooks. Daraus erstellt das LLM eine **begründete Diagnose mit Belegen und Handlungsvorschlägen**. Die Behebung wird nicht allein aus einer Modellvermutung ausgeführt, Änderungen durchlaufen einen eigenen kontrollierten Freigabeprozess.
 
 ## API-Konzept
 
-Die folgenden Routen sind ein **geplanter Schnittstellenentwurf**; sie beschreiben noch keine bereits implementierte API.
+Die folgenden Routen sind ein **geplanter Schnittstellenentwurf**, sie beschreiben noch keine bereits implementierte API.
 
 | Bereich | Geplante Endpunkte | Zweck |
 | --- | --- | --- |
