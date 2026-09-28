@@ -1,5 +1,20 @@
 # Platform Engineering Assistant
 
+> **Projektstatus:** In Entwicklung. Die Badges zeigen den geplanten Technologie-Stack, nicht den aktuellen Implementierungsstand.
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![pgvector](https://img.shields.io/badge/pgvector-4169E1?style=for-the-badge)
+![Azure](https://img.shields.io/badge/Microsoft_Azure-0078D4?style=for-the-badge)
+![Databricks](https://img.shields.io/badge/Databricks-FF3621?style=for-the-badge&logo=databricks&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=for-the-badge&logo=terraform&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?style=for-the-badge)
+![Langfuse](https://img.shields.io/badge/Langfuse-1F2937?style=for-the-badge)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+# Platform Engineering Assistant
+
 **Ein geplanter KI-gestützter Assistent für Aufbau, Änderung und Betrieb von Azure- und Databricks-Datenplattformen.** Er übersetzt Anforderungen in nachvollziehbare technische Schritte: Umgebung prüfen, Unternehmensstandards berücksichtigen, Deployment planen, Freigabe einholen, ausführen und das Ergebnis überwachen.
 
 > **Projektstatus:** Diese README beschreibt die Zielarchitektur und die geplante Entwicklung. Die genannten Integrationen und Workflows sind erst verfügbar, wenn sie im Repository implementiert sind. Der erste technische Meilenstein ist eine FastAPI-Anwendung mit PostgreSQL und CRUD für Plattformen.
