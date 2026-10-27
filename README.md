@@ -20,7 +20,7 @@
 
 **Ein geplanter KI-gestützter Assistent für Aufbau, Änderung und Betrieb von Azure- und Databricks-Datenplattformen.** Er übersetzt Anforderungen in nachvollziehbare technische Schritte: Umgebung prüfen, Unternehmensstandards berücksichtigen, Deployment planen, Freigabe einholen, ausführen und das Ergebnis überwachen.
 
-> **Projektstatus:** Diese README beschreibt die Zielarchitektur und die geplante Entwicklung. Die genannten Integrationen und Workflows sind erst verfügbar, wenn sie im Repository implementiert sind. Der erste technische Meilenstein ist eine FastAPI-Anwendung mit PostgreSQL und CRUD für Plattformen.
+> **Projektstatus:** Diese README beschreibt die Zielarchitektur und die geplante Entwicklung. Die genannten Integrationen und Workflows sind erst verfügbar, wenn sie im Repository implementiert sind. Umgesetzt ist der erste Meilenstein: eine FastAPI-Anwendung mit PostgreSQL und CRUD für Plattformen (siehe [Lokal starten](#lokal-starten)).
 
 ## Welches Problem löst das Projekt?
 
@@ -123,4 +123,46 @@ CRUD liefert die fachlichen Grundfunktionen. Im späteren Nutzerablauf verwendet
 | 6. Orchestrierung | Assistant-Workflow mit LLM, Rückfragen und Freigabeprozess. |
 | 7. Ausführung und Betrieb | Freigegebenes Apply, Verifikation, Incident-Analyse und Observability. |
 
-**Erster Meilenstein:** Platform-CRUD funktioniert mit FastAPI und PostgreSQL und kann über die automatisch generierte API-Dokumentation unter `/docs` getestet werden. Eine konkrete Startanleitung und `.env.example` folgen mit der Implementierung.
+**Erster Meilenstein (umgesetzt):** Platform-CRUD funktioniert mit FastAPI und PostgreSQL und kann über die automatisch generierte API-Dokumentation unter `/docs` getestet werden.
+
+### Technische Entscheidungen
+
+| Bereich | Entscheidung |
+| --- | --- |
+| API | FastAPI mit Pydantic-Validierung |
+| Datenbank | PostgreSQL 17 mit `pgvector`, SQLAlchemy 2.0 (synchron, psycopg3), Migrationen mit Alembic |
+| LLM | Azure OpenAI |
+| Embeddings | Azure OpenAI `text-embedding-3-small` (1536 Dimensionen), gespeichert in `pgvector` |
+| Orchestrierung | LangGraph mit Postgres-Checkpoints; Freigaben als Human-in-the-loop-Unterbrechung |
+| Tests | pytest gegen eine eigene Postgres-Datenbank `pea_test`; jeder Test läuft in einer zurückgerollten Transaktion |
+
+## Lokal starten
+
+Voraussetzungen: Python 3.12+, Docker.
+
+```bash
+cp .env.example .env              # Passwort in POSTGRES_PASSWORD, DATABASE_URL und TEST_DATABASE_URL setzen
+docker compose up -d              # PostgreSQL mit pgvector
+pip install -r requirements.txt
+alembic upgrade head              # Tabellen anlegen
+
+# Einmalig: Test-Datenbank anlegen
+docker exec pea_postgres psql -U pea_app -d pea_db -c "CREATE DATABASE pea_test OWNER pea_app"
+
+uvicorn app.main:app --reload     # API unter http://localhost:8000/docs
+pytest                            # Tests
+```
+
+### Projektstruktur
+
+```
+app/
+  main.py              FastAPI-App und Router
+  config.py            Einstellungen aus .env
+  db.py                Engine, Session, Base, get_db()
+  models.py            SQLAlchemy-Models
+  schemas/             Pydantic-Schemas für die API
+  routers/             API-Endpunkte
+migrations/            Alembic-Migrationen
+tests/                 pytest
+```
