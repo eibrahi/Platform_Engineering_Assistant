@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routers import platforms
+from app.routers import incidents, platforms, users
 
 app = FastAPI(
     title='Platform Engineering Assistant',
@@ -8,6 +8,8 @@ app = FastAPI(
 )
 
 app.include_router(platforms.router)
+app.include_router(users.router)
+app.include_router(incidents.router)
 
 
 @app.get('/health', tags=['system'])

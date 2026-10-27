@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, func, true
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -29,6 +29,8 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(100))
     email: Mapped[str] = mapped_column(String(255), unique=True)
     role: Mapped[str] = mapped_column(String(50), default='viewer')
+    # Deaktivieren statt löschen: Deployments und Chats verweisen weiter auf den User
+    is_active: Mapped[bool] = mapped_column(server_default=true())
     created_at: Mapped[datetime] = created_at_column()
 
     deployments: Mapped[list['Deployment']] = relationship(back_populates='creator')

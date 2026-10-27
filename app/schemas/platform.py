@@ -3,6 +3,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from app.schemas.common import reject_null
+
 # Muss zu ENVIRONMENTS / PLATFORM_STATUSES in app/models.py passen
 Environment = Literal['dev', 'test', 'prod']
 PlatformStatus = Literal['healthy', 'degraded', 'down', 'unknown']
@@ -35,9 +37,7 @@ class PlatformUpdate(BaseModel):
 
     @model_validator(mode='after')
     def required_fields_not_null(self):
-        for field in ('name', 'environment', 'cloud_provider', 'status'):
-            if field in self.model_fields_set and getattr(self, field) is None:
-                raise ValueError(f'{field} darf nicht null sein')
+        reject_null(self, ('name', 'environment', 'cloud_provider', 'status'))
         return self
 
 

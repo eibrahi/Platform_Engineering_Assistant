@@ -20,7 +20,7 @@
 
 **Ein geplanter KI-gestützter Assistent für Aufbau, Änderung und Betrieb von Azure- und Databricks-Datenplattformen.** Er übersetzt Anforderungen in nachvollziehbare technische Schritte: Umgebung prüfen, Unternehmensstandards berücksichtigen, Deployment planen, Freigabe einholen, ausführen und das Ergebnis überwachen.
 
-> **Projektstatus:** Diese README beschreibt die Zielarchitektur und die geplante Entwicklung. Die genannten Integrationen und Workflows sind erst verfügbar, wenn sie im Repository implementiert sind. Umgesetzt ist der erste Meilenstein: eine FastAPI-Anwendung mit PostgreSQL und CRUD für Plattformen (siehe [Lokal starten](#lokal-starten)).
+> **Projektstatus:** Diese README beschreibt die Zielarchitektur und die geplante Entwicklung. Die genannten Integrationen und Workflows sind erst verfügbar, wenn sie im Repository implementiert sind. Umgesetzt ist der erste Meilenstein: eine FastAPI-Anwendung mit PostgreSQL und den Endpunkten für Plattformen, Users und Incidents (siehe [Lokal starten](#lokal-starten)).
 
 ## Welches Problem löst das Projekt?
 
@@ -90,15 +90,18 @@ Ein Incident kann durch einen Nutzer oder ein Monitoring-Signal entstehen. Der A
 
 ## API-Konzept
 
-Die folgenden Routen sind ein **geplanter Schnittstellenentwurf**, sie beschreiben noch keine bereits implementierte API.
+Nicht jede Tabelle bekommt volles CRUD: **Stammdaten** werden frei verwaltet, **Vorgänge** ändern ihren Status über gezielte Aktionen, **Protokolle** (Agent-Läufe, Nachrichten) schreibt nur das System selbst.
 
-| Bereich | Geplante Endpunkte | Zweck |
-| --- | --- | --- |
-| Plattformen | `POST /api/platforms`, `GET /api/platforms`, `GET /api/platforms/{id}`, `PUT /api/platforms/{id}`, `DELETE /api/platforms/{id}` | Stammdaten verwalten. |
-| Deployments | `POST /api/platforms/{id}/deployments`, `POST /api/deployments/{id}/plan`, `POST /api/deployments/{id}/approve`, `POST /api/deployments/{id}/apply` | Änderungen planen und freigeben. |
-| Incidents | `POST /api/incidents`, `GET /api/incidents`, `GET /api/incidents/{id}`, `POST /api/incidents/{id}/analyze` | Störungen erfassen und analysieren. |
-| Dokumente / RAG | `POST /api/documents`, `GET /api/documents`, `POST /api/rag/search` | Wissensbasis verwalten und durchsuchen. |
-| Assistant | `POST /api/assistant/chat` | Anfragen in natürlicher Sprache verarbeiten. |
+| Bereich | Endpunkte | Status | Zweck |
+| --- | --- | --- | --- |
+| Plattformen | `POST/GET /api/platforms`, `GET/PUT/DELETE /api/platforms/{id}` | ✅ umgesetzt | Stammdaten verwalten. |
+| Users | `POST/GET /api/users`, `GET/PUT /api/users/{id}`, `DELETE /api/users/{id}` (deaktiviert nur) | ✅ umgesetzt | Nutzer und Rollen verwalten; bis zum echten Login. |
+| Incidents | `POST/GET /api/incidents`, `GET/PUT /api/incidents/{id}` (kein Löschen) | ✅ umgesetzt | Störungen erfassen; `resolved_at` folgt dem Status. |
+| Incidents | `POST /api/incidents/{id}/analyze` | geplant | Störung mit LLM und Runbooks analysieren. |
+| Deployments | `POST /api/platforms/{id}/deployments`, `POST /api/deployments/{id}/plan`, `POST /api/deployments/{id}/approve`, `POST /api/deployments/{id}/apply` | geplant | Änderungen planen und freigeben; handelnder User vorläufig über Header `X-User-Id`. |
+| Agent-Läufe | `GET /api/agent-runs`, `GET /api/agent-runs/{id}` | geplant | Nur lesen, Agenten schreiben selbst. |
+| Dokumente / RAG | `POST /api/documents`, `GET /api/documents`, `POST /api/rag/search` | geplant | Wissensbasis verwalten und durchsuchen. |
+| Assistant | `POST /api/assistant/chat` | geplant | Anfragen in natürlicher Sprache verarbeiten. |
 
 CRUD liefert die fachlichen Grundfunktionen. Im späteren Nutzerablauf verwendet der Assistant dieselben Services intern. Ein Chat erzeugt also bei Bedarf selbst den passenden Plattform- oder Deployment-Datensatz.
 
@@ -123,7 +126,7 @@ CRUD liefert die fachlichen Grundfunktionen. Im späteren Nutzerablauf verwendet
 | 6. Orchestrierung | Assistant-Workflow mit LLM, Rückfragen und Freigabeprozess. |
 | 7. Ausführung und Betrieb | Freigegebenes Apply, Verifikation, Incident-Analyse und Observability. |
 
-**Erster Meilenstein (umgesetzt):** Platform-CRUD funktioniert mit FastAPI und PostgreSQL und kann über die automatisch generierte API-Dokumentation unter `/docs` getestet werden.
+**Erster Meilenstein (umgesetzt):** Platform-CRUD funktioniert mit FastAPI und PostgreSQL und kann über die automatisch generierte API-Dokumentation unter `/docs` getestet werden. Users und Incidents sind ebenfalls umgesetzt.
 
 ### Technische Entscheidungen
 
@@ -162,7 +165,7 @@ app/
   db.py                Engine, Session, Base, get_db()
   models.py            SQLAlchemy-Models
   schemas/             Pydantic-Schemas für die API
-  routers/             API-Endpunkte
+  routers/             API-Endpunkte (common.py: gemeinsame Helfer)
 migrations/            Alembic-Migrationen
 tests/                 pytest
 ```
