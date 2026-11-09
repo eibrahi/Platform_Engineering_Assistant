@@ -24,7 +24,7 @@ print(antwort_b.usage_metadata)
 print('\n=== Experiment 3: Gedächtnis von Hand ===')
 antwort_c = model.invoke([
     system,
-    HumanMessage("Ich heiße ..."), antwort_a, HumanMessage("Wie heiße ich?")
+    antwort_a, HumanMessage("Wie heiße ich?")
 ])
 print(antwort_c.content)
 print(antwort_c.usage_metadata)

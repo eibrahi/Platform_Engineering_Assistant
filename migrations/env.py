@@ -20,6 +20,15 @@ if not config.get_main_option('sqlalchemy.url'):
 
 target_metadata = Base.metadata
 
+# Tabellen, die LangGraphs PostgresSaver selbst anlegt (checkpointer.setup()).
+# Alembic soll sie ignorieren, sonst würde autogenerate sie löschen wollen.
+LANGGRAPH_TABLES = {'checkpoints', 'checkpoint_blobs', 'checkpoint_writes', 'checkpoint_migrations'}
+
+
+def include_name(name, type_, parent_names):
+    if type_ == 'table':
+        return name not in LANGGRAPH_TABLES
+    return True
 
 def run_migrations_offline():
     context.configure(
@@ -52,6 +61,7 @@ def run_migrations_online():
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
+            include_name=include_name,
             process_revision_directives=process_revision_directives,
         )
 

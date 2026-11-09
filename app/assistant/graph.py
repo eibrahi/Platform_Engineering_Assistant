@@ -35,7 +35,7 @@ def assistant(state: State) -> dict:
 
 
 # 4. Graph erstellen und kompilieren
-def build_graph():
+def build_graph(checkpointer=None):
     graph = StateGraph(State)
 
     graph.add_node("assistant", assistant)
@@ -43,4 +43,4 @@ def build_graph():
     graph.add_edge(START, "assistant")
     graph.add_edge("assistant", END)
 
-    return graph.compile()
+    return graph.compile(checkpointer=checkpointer)
