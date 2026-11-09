@@ -40,4 +40,3 @@ with PostgresSaver.from_conn_string(conn_string) as checkpointer:
 
     ergebnis = graph.invoke({'messages': [HumanMessage('Wie heiße ich?')]}, config)
     print('Antwort:', ergebnis['messages'][-1].content)
-
