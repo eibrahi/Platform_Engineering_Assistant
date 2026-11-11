@@ -1,0 +1,21 @@
+schema: spec-driven
+
+context: |
+  Platform Engineering Assistant: FastAPI + SQLAlchemy + Alembic + Postgres (pgvector),
+  LangGraph-Assistant mit OpenAI (gpt-4.1-mini), Streamlit-UI in ui/ (nur HTTP zur API).
+  Ziel: Databricks-Prod-Workspace DBTX_Prod nur lesend analysieren, Incidents erkennen,
+  Lösungen vorschlagen. Schreibende Aktionen nur mit menschlicher Freigabe (interrupt()).
+  Schreibe alle Artefakte auf Deutsch. Die Schlüsselwörter SHALL/MUST, WHEN/THEN und die
+  Überschriften (Requirement, Scenario, ADDED ...) bleiben englisch.
+  Der Entwickler lernt und schreibt den Code selbst.
+
+rules:
+  tasks:
+    - Jede Aufgabe ist klein genug für einen Commit.
+    - Zu jedem Szenario gehört ein pytest-Test.
+
+operations:
+  apply:
+    guidance:
+      - Code NICHT selbst schreiben. Pro Aufgabe das Konzept erklären, ein Beispiel geben,
+        der Entwickler tippt den Code, danach Review. Häkchen erst nach bestandenem Review.
